@@ -18,7 +18,7 @@ const EmailSection = () => {
   
     console.log("Sending Data:", data);
   
-    const response = await fetch("/api/messages", {
+    const response = await fetch("/api/message", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
