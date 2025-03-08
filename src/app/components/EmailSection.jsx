@@ -16,19 +16,43 @@ const EmailSection = () => {
       message: e.target.message.value,
     };
   
+    console.log("Sending Data:", data);
+  
     const response = await fetch("/api/messages", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     });
   
-    if (response.ok) {
-      alert("Email sent successfully!");
-      e.target.reset(); // إعادة تعيين النموذج
-    } else {
+    if (!response.ok) {
+      console.error("Server Error:", response.status, response.statusText);
       alert("Failed to send email");
+      return;
+    }
+  
+    const text = await response.text(); // احصل على الاستجابة كنص
+    console.log("Raw Response:", text);
+  
+    let result;
+    try {
+      result = JSON.parse(text); // حاول تحويل النص إلى JSON
+    } catch (error) {
+      console.error("JSON Parse Error:", error);
+      alert("Invalid server response");
+      return;
+    }
+  
+    console.log("Response:", result);
+  
+    if (result.success) {
+      alert("Email sent successfully!");
+      e.target.reset();
+    } else {
+      alert("Failed to send email: " + (result.error || "Unknown error"));
     }
   };
+  
+  
   
 
   return (
